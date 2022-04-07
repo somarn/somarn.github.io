@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>När är det sommar?</title>
+<style>
+        html, body { height: 100%; background-color: #90c0de; overflow: hidden; }
+
+h1.time {
+    position: absolute;
+    top: 20%;
+    left: 0;
+    right: 0;
+    margin: -110px 0 0 0;
+    height: 220px;
+    text-align: center;
+    color: #1c7bb7;
+    font-family: Arial, serif;
+    font-size: 50px;
+    line-height: 100px;
+    filter: drop-shadow(0 0 0.1rem black);
+    font-weight: bold;
+}
+</style>
+</head>
+<body>
+<center><h1 id="ell" class='time'></h1></center>
+<script>
+function getMsg(stamp, word, splitting, slicing=0) {
+    if (stamp > 0) {
+        if (stamp > 1) {
+        	let rsl = word;
+            if (slicing<0) {
+            	rsl = word.slice(0, slicing);
+            }
+            return stamp + ' ' + rsl + splitting + ', ';
+        } else {
+            return stamp + ' ' + word + ', ';
+        }
+    } else {
+        return '';
+    }
+}
+function delay(t){return new Promise(e=>setTimeout(e,t))}
+function update() {
+    const textElement = document.getElementById("ell");
+    const currentYear = new Date().getFullYear();
+    const oneDay = 24 * 60 * 60 * 1000;
+    const firstDate = new Date(currentYear, 6, 8, 18, 15);
+    const secondDate = new Date();
+    let diffDays = Math.round(Math.abs((firstDate - secondDate) / oneDay));
+    let seconds = Math.round(Math.abs((firstDate  - secondDate) /  1000 ));
+
+
+    let weeks =    Math.floor(diffDays / 7);
+    let months=    Math.floor(weeks / 4   );
+    weeks = weeks - (months * 4);
+    diffDays =     diffDays - (weeks * 7) - (months * 4 * 7);
+    let daymsg, weekmsg, monthmsg, hmsg, smsg;
+    let msec = ((oneDay/1000) * (7 * weeks)) * (months * 4);
+    seconds = seconds - ((oneDay/1000) * diffDays) - ((oneDay/1000) * (7 * weeks)) - msec;
+    let hours = Math.floor(seconds / 3600);
+    seconds = seconds - hours * 3600;
+
+    daymsg = getMsg(diffDays, 'dag', 'ar');
+    weekmsg =getMsg(weeks,   'vecka', 'or', -1);
+    monthmsg=getMsg(months, 'månad', 'er');
+    hmsg    =getMsg(hours,  'timme', 'ar', -1);
+    smsg    =getMsg(seconds,'sekund','er');
+
+
+
+    textElement.innerHTML =  monthmsg + weekmsg + daymsg + hmsg.slice(0, -2) + ' och ' + smsg.slice(0, -2) + ' kvar till sommarlov.';
+}
+async function updateSec() {
+	while (1) {
+        await delay(100);
+        update();
+    }
+}
+updateSec();
+</script>
+
+</body>
+</html>
