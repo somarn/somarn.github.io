@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -57,26 +58,31 @@ function update() {
     let months=    Math.floor(weeks / 4   );
     weeks = weeks - (months * 4);
     diffDays =     diffDays - (weeks * 7) - (months * 4 * 7);
-    let daymsg, weekmsg, monthmsg, hmsg, smsg;
+    let daymsg, weekmsg, monthmsg, hmsg, smsg, minmsg;
     let msec = ((oneDay/1000) * (7 * weeks)) * (months * 4);
     seconds = seconds - ((oneDay/1000) * diffDays) - ((oneDay/1000) * (7 * weeks)) - msec;
     let hours = Math.floor(seconds / 3600);
     seconds = seconds - hours * 3600;
-
+	let minutes = Math.floor(seconds / 60);
+    seconds = seconds - (minutes * 60);
     daymsg = getMsg(diffDays, 'dag', 'ar');
     weekmsg =getMsg(weeks,   'vecka', 'or', -1);
     monthmsg=getMsg(months, 'månad', 'er');
     hmsg    =getMsg(hours,  'timme', 'ar', -1);
     smsg    =getMsg(seconds,'','');
+    if (seconds===0) {
+    	smsg = '0,  ';
+    }
+    minmsg  =getMsg(minutes,'minut', 'er');
 
 
 
-    textElement.innerHTML =  'Det är<br>'+monthmsg + weekmsg + daymsg + hmsg.slice(0, -2) + ' och ' + smsg.slice(0, -3) + '.' + millsg + ' sekunder kvar till sommarlov.';
+    textElement.innerHTML =  'Det är<br>'+monthmsg + weekmsg + daymsg + hmsg + minmsg.slice(0, -2) + ' och ' + smsg.slice(0, -3) + '.' + millsg + ' sekunder kvar till sommarlov.';
 }
 async function updateSec() {
 	while (1) {
-        await delay(1);
         update();
+        await delay(1);
     }
 }
 updateSec();
