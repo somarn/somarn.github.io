@@ -49,7 +49,9 @@ function update() {
     const secondDate = new Date();
     let diffDays = Math.round(Math.abs((firstDate - secondDate) / oneDay));
     let seconds = Math.round(Math.abs((firstDate  - secondDate) /  1000 ));
-
+	let millsg  = (Math.abs(firstDate  - secondDate) - (seconds*1000) + 500); 
+    if (millsg < 100 && millsg > 9) { millsg = millsg + '0'; }
+    if (millsg < 10) { millsg = millsg + '00'; }
 
     let weeks =    Math.floor(diffDays / 7);
     let months=    Math.floor(weeks / 4   );
@@ -65,15 +67,15 @@ function update() {
     weekmsg =getMsg(weeks,   'vecka', 'or', -1);
     monthmsg=getMsg(months, 'månad', 'er');
     hmsg    =getMsg(hours,  'timme', 'ar', -1);
-    smsg    =getMsg(seconds,'sekund','er');
+    smsg    =getMsg(seconds,'','');
 
 
 
-    textElement.innerHTML =  'Det är<br>'+monthmsg + weekmsg + daymsg + hmsg.slice(0, -2) + ' och ' + smsg.slice(0, -2) + ' kvar till sommarlov.';
+    textElement.innerHTML =  'Det är<br>'+monthmsg + weekmsg + daymsg + hmsg.slice(0, -2) + ' och ' + smsg.slice(0, -3) + '.' + millsg + ' sekunder kvar till sommarlov.';
 }
 async function updateSec() {
 	while (1) {
-        await delay(100);
+        await delay(1);
         update();
     }
 }
